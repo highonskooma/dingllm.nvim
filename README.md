@@ -45,19 +45,19 @@ Add your API keys to your env (export it in zshrc or bashrc)
       end
 
       local function ollama_replace()
-        M.invoke_llm_and_stream_into_editor({
+        dingllm.invoke_llm_and_stream_into_editor({
           url = 'http://localhost:11434/api/chat',
           model = 'llama3.1:8b',
           system = system_prompt,
-        }, make_ollama_spec_curl_args, M.handle_ollama_spec_data)
+        }, make_ollama_spec_curl_args, dingllm.handle_ollama_spec_data)
       end
 
       local function ollama_help()
-          M.invoke_llm_and_stream_into_editor({
+          .invoke_llm_and_stream_into_editor({
               url = 'http://localhost:11434/api/chat',
               model = 'llama3.1:8b',
               system = helpful_prompt,
-          }, make_ollama_spec_curl_args, M.handle_ollama_spec_data)
+          }, make_ollama_spec_curl_args, dingllm.handle_ollama_spec_data)
       end
 
       local function handle_open_router_spec_data(data_stream)
