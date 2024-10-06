@@ -1,6 +1,10 @@
 <img src="https://github.com/yacineMTB/dingllm.nvim/assets/10282244/d03ef83d-a5ee-4ddb-928f-742172f3c80c" alt="wordart (6)" style="width:200px;height:100px;">
 
 ### dingllm.nvim
+This is a fork of yacine's LLM nvim scripts. I've added support for Ollama.
+
+---
+
 Yacine's no frills LLM nvim scripts. free yourself, brothers and sisters
 
 This is a really light config. I *will* be pushing breaking changes. I recommend reading the code and copying it over - it's really simple.
@@ -28,6 +32,33 @@ Add your API keys to your env (export it in zshrc or bashrc)
       local helpful_prompt = 'You are a helpful assistant. What I have sent are my notes so far.'
       local dingllm = require 'dingllm'
 
+      local function make_ollama_spec_curl_args(opts, prompt)
+          local url = opts.url
+          local data = {
+              model = "llama3.1:8b",
+              messages = { { role = 'system', content = system_prompt }, { role = 'user', content = prompt } },
+              stream = true,
+          }
+          local args = { '-d', vim.fn.json_encode(data) }
+          table.insert(args, url)
+          return args
+      end
+
+      local function ollama_replace()
+        M.invoke_llm_and_stream_into_editor({
+          url = 'http://localhost:11434/api/chat',
+          model = 'llama3.1:8b',
+          system = system_prompt,
+        }, make_ollama_spec_curl_args, M.handle_ollama_spec_data)
+      end
+
+      local function ollama_help()
+          M.invoke_llm_and_stream_into_editor({
+              url = 'http://localhost:11434/api/chat',
+              model = 'llama3.1:8b',
+              system = helpful_prompt,
+          }, make_ollama_spec_curl_args, M.handle_ollama_spec_data)
+      end
 
       local function handle_open_router_spec_data(data_stream)
         local success, json = pcall(vim.json.decode, data_stream)
@@ -132,6 +163,8 @@ Add your API keys to your env (export it in zshrc or bashrc)
         }, dingllm.make_anthropic_spec_curl_args, dingllm.handle_anthropic_spec_data)
       end
 
+	  vim.keymap.set({ 'n', 'v' }, '<leader>t', ollama_replace, { desc = 'ollama base' }) -- explain the codevim.keymap.set
+	  vim.keymap.set({ 'n', 'v' }, '<leader>T', ollama_help, { desc = 'ollama help' })
       vim.keymap.set({ 'n', 'v' }, '<leader>k', groq_replace, { desc = 'llm groq' })
       vim.keymap.set({ 'n', 'v' }, '<leader>K', groq_help, { desc = 'llm groq_help' })
       vim.keymap.set({ 'n', 'v' }, '<leader>L', llama405b_help, { desc = 'llm llama405b_help' })
