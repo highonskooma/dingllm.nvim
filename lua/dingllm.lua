@@ -128,43 +128,43 @@ local function get_prompt(opts)
 end
 
 function M.handle_anthropic_spec_data(data_stream, event_state)
-	local data_match = data_stream:match '^data: (.+)$'
-	if data_match then
-		if event_state == 'content_block_delta' then
-			local json = vim.json.decode(data_match)
-			if json.delta and json.delta.text then
-				M.write_string_at_cursor(json.delta.text)
-			end
-		end
-	end
+  local data_match = data_stream:match '^data: (.+)$'
+  if data_match then
+    if event_state == 'content_block_delta' then
+      local json = vim.json.decode(data_match)
+      if json.delta and json.delta.text then
+        M.write_string_at_cursor(json.delta.text)
+      end
+    end
+  end
 end
 
 function M.handle_openai_spec_data(data_stream)
-	local data_match = data_stream:match '^data: (.+)$'
-	if data_match then
-		if data_match:match '"delta":' then
-			local json = vim.json.decode(data_match)
-			if json.choices and json.choices[1] and json.choices[1].delta then
-				local content = json.choices[1].delta.content
-				if content then
-					M.write_string_at_cursor(content)
-				end
-			end
-		end
-	end
+  local data_match = data_stream:match '^data: (.+)$'
+  if data_match then
+    if data_match:match '"delta":' then
+      local json = vim.json.decode(data_match)
+      if json.choices and json.choices[1] and json.choices[1].delta then
+        local content = json.choices[1].delta.content
+        if content then
+          M.write_string_at_cursor(content)
+        end
+      end
+    end
+  end
 end
 
 function M.handle_ollama_spec_data(data_stream)
-	local success, json = pcall(vim.json.decode, data_stream)
-	if not success then
-		vim.print("Failed to decode JSON")
-		return
-	end
-	if type(json.message) == "table" and type(json.message.content) == "string" then
-		M.write_string_at_cursor(json.message.content)
-	else
-		vim.print("Unexpected JSON structure or missing content")
-	end
+  local success, json = pcall(vim.json.decode, data_stream)
+  if not success then
+    vim.print("Failed to decode JSON")
+    return
+  end
+  if type(json.message) == "table" and type(json.message.content) == "string" then
+    M.write_string_at_cursor(json.message.content)
+  else
+    vim.print("Unexpected JSON structure or missing content")
+  end
 end
 
 local group = vim.api.nvim_create_augroup('DING_LLM_AutoGroup', { clear = true })

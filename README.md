@@ -53,11 +53,11 @@ Add your API keys to your env (export it in zshrc or bashrc)
       end
 
       local function ollama_help()
-          .invoke_llm_and_stream_into_editor({
-              url = 'http://localhost:11434/api/chat',
-              model = 'llama3.1:8b',
-              system = helpful_prompt,
-          }, make_ollama_spec_curl_args, dingllm.handle_ollama_spec_data)
+        dingllm.invoke_llm_and_stream_into_editor({
+          url = 'http://localhost:11434/api/chat',
+          model = 'llama3.1:8b',
+          system = helpful_prompt,
+        }, make_ollama_spec_curl_args, dingllm.handle_ollama_spec_data)
       end
 
       local function handle_open_router_spec_data(data_stream)
@@ -163,8 +163,8 @@ Add your API keys to your env (export it in zshrc or bashrc)
         }, dingllm.make_anthropic_spec_curl_args, dingllm.handle_anthropic_spec_data)
       end
 
-	  vim.keymap.set({ 'n', 'v' }, '<leader>t', ollama_replace, { desc = 'ollama base' }) -- explain the codevim.keymap.set
-	  vim.keymap.set({ 'n', 'v' }, '<leader>T', ollama_help, { desc = 'ollama help' })
+      vim.keymap.set({ 'n', 'v' }, '<leader>z', ollama_replace, { desc = 'ollama base' }) -- explain the codevim.keymap.set
+      vim.keymap.set({ 'n', 'v' }, '<leader>T', ollama_help, { desc = 'ollama help' })
       vim.keymap.set({ 'n', 'v' }, '<leader>k', groq_replace, { desc = 'llm groq' })
       vim.keymap.set({ 'n', 'v' }, '<leader>K', groq_help, { desc = 'llm groq_help' })
       vim.keymap.set({ 'n', 'v' }, '<leader>L', llama405b_help, { desc = 'llm llama405b_help' })
