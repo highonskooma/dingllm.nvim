@@ -31,17 +31,17 @@ Add your API keys to your env (export it in zshrc or bashrc)
         'You should replace the code that you are sent, only following the comments. Do not talk at all. Only output valid code. Do not provide any backticks that surround the code. Never ever output backticks like this ```. Any comment that is asking you for something should be removed after you satisfy them. Other comments should left alone. Do not output backticks'
       local helpful_prompt = 'You are a helpful assistant. What I have sent are my notes so far.'
       local dingllm = require 'dingllm'
-
+    
       local function make_ollama_spec_curl_args(opts, prompt)
-          local url = opts.url
-          local data = {
-              model = "llama3.1:8b",
-              messages = { { role = 'system', content = system_prompt }, { role = 'user', content = prompt } },
-              stream = true,
-          }
-          local args = { '-d', vim.fn.json_encode(data) }
-          table.insert(args, url)
-          return args
+        local url = opts.url
+        local data = {
+          model = "llama3.1:8b",
+          messages = { { role = 'system', content = system_prompt }, { role = 'user', content = prompt } },
+          stream = true,
+        }
+        local args = { '-d', vim.fn.json_encode(data) }
+        table.insert(args, url)
+        return args
       end
 
       local function ollama_replace()
