@@ -31,11 +31,12 @@ Add your API keys to your env (export it in zshrc or bashrc)
         'You should replace the code that you are sent, only following the comments. Do not talk at all. Only output valid code. Do not provide any backticks that surround the code. Never ever output backticks like this ```. Any comment that is asking you for something should be removed after you satisfy them. Other comments should left alone. Do not output backticks'
       local helpful_prompt = 'You are a helpful assistant. What I have sent are my notes so far.'
       local dingllm = require 'dingllm'
+      local ollama_model = 'llama3.1:8b' -- select your ollama model here
     
       local function make_ollama_spec_curl_args(opts, prompt)
         local url = opts.url
         local data = {
-          model = "llama3.1:8b",
+          model = ollama_model,
           messages = { { role = 'system', content = system_prompt }, { role = 'user', content = prompt } },
           stream = true,
         }
@@ -47,7 +48,7 @@ Add your API keys to your env (export it in zshrc or bashrc)
       local function ollama_replace()
         dingllm.invoke_llm_and_stream_into_editor({
           url = 'http://localhost:11434/api/chat',
-          model = 'llama3.1:8b',
+          model = ollama_model,
           system = system_prompt,
         }, make_ollama_spec_curl_args, dingllm.handle_ollama_spec_data)
       end
@@ -55,7 +56,7 @@ Add your API keys to your env (export it in zshrc or bashrc)
       local function ollama_help()
         dingllm.invoke_llm_and_stream_into_editor({
           url = 'http://localhost:11434/api/chat',
-          model = 'llama3.1:8b',
+          model = ollama_model,
           system = helpful_prompt,
         }, make_ollama_spec_curl_args, dingllm.handle_ollama_spec_data)
       end
